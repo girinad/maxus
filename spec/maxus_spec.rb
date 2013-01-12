@@ -2,7 +2,7 @@ require 'maxus'
 describe Maxus do
 
   before(:all) do
-    @maxus = Maxus.build do
+    @maxus = Maxus.build :develop do
       env :develop, parent: :production do
         hello :world
         coordinates do
@@ -30,24 +30,20 @@ describe Maxus do
   end
 
   it "creates key value" do
-    @maxus.develop.hello.should eq :world
-    @maxus.production.word.should eq :yahoo
+    @maxus.hello.should eq :world
   end
 
   it "creates hierarchy" do
-    @maxus.develop.coordinates.x.should eq 100
-    @maxus.develop.coordinates.y.should eq 200
+    @maxus.coordinates.x.should eq 100
+    @maxus.coordinates.y.should eq 200
   end
 
   it "creates inheritance" do
-    @maxus.develop.word.should eq :yahoo
-    @maxus.production.word.should eq :yahoo
-    @maxus.production.env.should eq :staging
-    @maxus.test.word.should eq :google
+    @maxus.word.should eq :yahoo
   end
 
   it "creates singleton methods" do
-    lambda {@maxus.develop.hello.develop}.should raise_error
+    lambda {@maxus.hello.develop}.should raise_error
   end
 end
 

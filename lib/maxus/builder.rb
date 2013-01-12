@@ -5,46 +5,28 @@ module Maxus
 
     attr_reader :_hash
 
-    def self.build(&block)
-      builder = new(&block)
-
-      if builder._hash.empty?
-        raise EmptyBlock
-      end
+    def self.build(env, &block)
+      builder = new(env, &block)
 
       builder._hash
     end
 
-    def initialize(&block)
-      @_hash = {}
-      @_inheritance = {}
+    def initialize(env, &block)
+      @envs = {}
 
       instance_eval &block
 
-      if @_inheritance
-        @_inheritance.each do |child, parent|
-          @_hash[child] = hash_deep_merge(@_hash[parent], @_hash[child], parent)
-        end
-      end
+      @_hash = @envs[env]
+      parent = @envs[env][:parent]
 
+      while parent do
+        @_hash = @envs[parent].deep_merge @_hash
+        parent = @envs[parent][:parent]
+      end
     end
 
-    def env(name, parent = nil, &block)
-      @_hash[name.to_sym] = Proxy.build(&block)
-
-      @_inheritance[name] = parent[:parent] if parent
-    end
-
-    def hash_deep_merge(parent_hash, child_hash, parent)
-      child_hash = parent_hash.deep_merge(child_hash)
-      parent = @_inheritance[parent]
-
-      if parent
-        parent_hash = @_hash[parent]
-        hash_deep_merge(parent_hash, child_hash, parent)
-      end
-
-      child_hash
+    def env(name, options = {}, &block)
+      @envs[name] = options.merge :hash => Proxy.build(&block)
     end
 
   end

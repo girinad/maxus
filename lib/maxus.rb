@@ -5,8 +5,8 @@ module Maxus
   autoload 'Builder', 'maxus/builder'
   autoload 'Creator', 'maxus/creator'
 
-  def self.build(&block)
-    result = Builder.build(&block)
+  def self.build(env, &block)
+    result = Builder.build(env, &block)
     Creator.create(result)
   end
 
