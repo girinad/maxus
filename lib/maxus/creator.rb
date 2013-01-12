@@ -33,7 +33,6 @@ module Maxus
     end
 
     def create_method(name, value, obj)
-
       obj.define_singleton_method(name) {value}
       obj
     end

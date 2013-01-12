@@ -14,4 +14,7 @@ Gem::Specification.new do |gem|
   gem.name          = "maxus"
   gem.require_paths = ["lib"]
   gem.version       = Maxus::VERSION
+
+  gem.add_development_dependency "rspec"
+  gem.add_runtime_dependency 'activesupport', '>= 3.0'
 end

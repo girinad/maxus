@@ -1,4 +1,5 @@
 require "maxus/version"
+require "active_support/core_ext/hash"
 
 module Maxus
   autoload 'Builder', 'maxus/builder'
