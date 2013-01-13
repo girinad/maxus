@@ -4,30 +4,23 @@ module Maxus
 
     attr_reader :_result
 
-    def self.create(envs)
-      creator = new(envs)
+    def self.create(hash)
+      creator = new(hash)
       creator._result
     end
 
-    def initialize(envs)
+    def initialize(hash)
       @_result = Object.new
 
-      envs.each do |name, data|
-        env = create_object(name, data)
-        @_result = create_method(name, env, @_result)
+      hash.each do |name, value|
+        @_result = create_smth(name, value, @_result)
       end
     end
 
-    def create_object (name, data)
+    def create_object (data)
       env = Object.new
       data.each do |name, value|
-
-        if value.is_a?(Array)
-          env = create_method(name, value.first, env)
-        else
-          obj = create_object(name, value)
-          env = create_method(name, obj, env)
-        end
+        env = create_smth(name, value, env)
       end
       env
     end
@@ -35,6 +28,17 @@ module Maxus
     def create_method(name, value, obj)
       obj.define_singleton_method(name) {value}
       obj
+    end
+
+    def create_smth(name, value, result)
+      if value.is_a?(Array)
+        result = create_method(name, value.first, result)
+      else
+        obj = create_object(value)
+        result = create_method(name, obj, result)
+      end
+
+      result
     end
 
   end

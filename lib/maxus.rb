@@ -10,5 +10,9 @@ module Maxus
     Creator.create(result)
   end
 
-  class EmptyBlock < RuntimeError ; end
+  class MaxusError < RuntimeError ; end
+  class NonexistentBlock < MaxusError ; end
+  class LoopedInheritance < MaxusError ; end
+
+
 end
